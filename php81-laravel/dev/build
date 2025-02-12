@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export UID=$(id -u)
+export GID=$(id -g)
+export USER=$(whoami)
+
+IMAGE="publiocavalcante/php-laravel:8.1-xdebug"
+
+docker build --build-arg UID=$UID \
+  --build-arg GID=$GID \
+  -t $IMAGE \
+  . \
+  --no-cache
+
+docker push $IMAGE

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+export UID=$(id -u)
+export GID=$(id -g)
+export USER=$(whoami)
+
+IMAGE="publiocavalcante/php:8.1"
+docker build --build-arg UID="${UID}" \
+      --build-arg GID="${GID}" \
+      -t $IMAGE .
+
+docker push $IMAGE
