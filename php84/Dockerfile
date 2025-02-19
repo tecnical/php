@@ -24,6 +24,7 @@ RUN apk add --no-cache php84-fpm php84-ctype php84-curl php84-dom \
     php84-pdo_sqlite php84-pdo_pgsql php84-exif php84-pcntl ca-certificates \
     && apk cache clean \
     && ln -s /usr/sbin/php-fpm84 /usr/sbin/php-fpm \
+    && ln -s /usr/bin/php84 /usr/bin/php \
     && set -x && \
     (delgroup "${USER}" || true) \
     && addgroup -g "${GID}" -S "${USER}" \

@@ -22,7 +22,7 @@ RUN apk add --no-cache php81-fpm php81-ctype php81-curl php81-dom php81-fileinfo
     php81-xml php81-xmlreader php81-xmlwriter php81-zlib php81-zip php81-bz2 php81-intl php81-gd \
     php81-imap php81-mysqli php81-bcmath php81-pdo_mysql php81-opcache ca-certificates && \
     ln -s /usr/sbin/php-fpm81 /usr/sbin/php-fpm  && \
-    # ln -s /usr/bin/php81 /usr/bin/php
+    ln -s /usr/bin/php81 /usr/bin/php && \
     set -x && \
     (delgroup "${USER}" || true) \
     && addgroup -g "${GID}" -S "${USER}" \

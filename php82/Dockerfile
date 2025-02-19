@@ -24,6 +24,7 @@ RUN apk add --no-cache php82-fpm php82-ctype php82-curl php82-dom \
     php82-pdo_sqlite ca-certificates \
     && apk cache clean \
     && ln -s /usr/sbin/php-fpm82 /usr/sbin/php-fpm \
+    && ln -s /usr/bin/php82 /usr/bin/php \
     && set -x && \
     (delgroup "${USER}" || true) \
     && addgroup -g "${GID}" -S "${USER}" \
