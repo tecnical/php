@@ -9,7 +9,8 @@ ARG USER=suporte
 
 # Essentials
 RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
-    zip unzip curl git supervisor openssl ca-certificates bash \
+    zip unzip curl git supervisor openssl ca-certificates bash php \
+    gcc make autoconf g++ zlib-dev \
     && apk cache clean \
     && sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
 
@@ -22,9 +23,15 @@ RUN apk add --no-cache php83-fpm php83-ctype php83-curl php83-dom \
     php83-xmlwriter php83-zlib php83-zip php83-bz2 php83-intl php83-gd \
     php83-imap php83-mysqli php83-bcmath php83-pdo_mysql php83-opcache \
     php83-pdo_sqlite php83-pdo_pgsql php83-exif php83-pcntl ca-certificates \
+    php83-dev unixodbc-dev \
     && apk cache clean \
+    && pecl channel-update pecl.php.net \
+    && pecl install sqlsrv \
+    && pecl install pdo_sqlsrv \
+    && echo "extension=sqlsrv.so" > /etc/php83/conf.d/sqlsrv.ini \
+    && echo "extension=pdo_sqlsrv.so" > /etc/php83/conf.d/pdo_sqlsrv.ini \
     && ln -s /usr/sbin/php-fpm83 /usr/sbin/php-fpm \
-    && ln -s /usr/bin/php83 /usr/bin/php \
+    # && ln -s /usr/bin/php83 /usr/bin/php \
     && set -x && \
     (delgroup "${USER}" || true) \
     && addgroup -g "${GID}" -S "${USER}" \
