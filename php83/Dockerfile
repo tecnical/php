@@ -14,6 +14,21 @@ RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
     && apk cache clean \
     && sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
 
+#Download the desired package(s)
+RUN curl -O https://download.microsoft.com/download/7/6/d/76de322a-d860-4894-9945-f0cc5d6a45f8/msodbcsql18_18.4.1.1-1_amd64.apk \
+    && curl -O https://download.microsoft.com/download/7/6/d/76de322a-d860-4894-9945-f0cc5d6a45f8/mssql-tools18_18.4.1.1-1_amd64.apk \
+    #(Optional) Verify signature, if 'gpg' is missing install it using 'apk add gnupg':
+    #curl -O https://download.microsoft.com/download/7/6/d/76de322a-d860-4894-9945-f0cc5d6a45f8/msodbcsql18_18.4.1.1-1_amd64.sig
+    #curl -O https://download.microsoft.com/download/7/6/d/76de322a-d860-4894-9945-f0cc5d6a45f8/mssql-tools18_18.4.1.1-1_amd64.sig
+
+    #curl https://packages.microsoft.com/keys/microsoft.asc  | gpg --import -
+    #gpg --verify msodbcsql18_18.4.1.1-1_amd64.sig msodbcsql18_18.4.1.1-1_amd64.apk
+    #gpg --verify mssql-tools18_18.4.1.1-1_amd64.sig mssql-tools18_18.4.1.1-1_amd64.apk
+
+    #Install the package(s)
+    && apk add --allow-untrusted msodbcsql18_18.4.1.1-1_amd64.apk \
+    && apk add --allow-untrusted mssql-tools18_18.4.1.1-1_amd64.apk
+
 # Installing PHP
 RUN apk add --no-cache php83-fpm php83-ctype php83-curl php83-dom \
     php83-fileinfo php83-ftp php83-iconv php83-json php83-ldap php83-mbstring \
