@@ -11,4 +11,4 @@ docker build --build-arg UID="${DOCKER_UID}" \
   . \
 #  --no-cache
 
-#docker push $IMAGE
+docker push $IMAGE
