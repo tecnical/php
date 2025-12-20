@@ -1,4 +1,4 @@
-FROM publiocavalcante/php:8.4
+FROM publiocavalcante/php:8.5
 
 ARG UID=1000
 ARG GID=1000

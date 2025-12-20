@@ -1,36 +1,34 @@
 ###############################################################################
 # Imagem PHP-8.3 baseada na imagem base alpine instalando o PHP do zero
 #
-FROM alpine:3.21.2
-
+FROM alpine:3.22.2
 ARG UID=1000
 ARG GID=1000
 ARG USER=suporte
 
 # Essentials
-RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
-    zip unzip curl git supervisor openssl ca-certificates bash php \
+RUN apk add --repository https://dl-cdn.alpinelinux.org/alpine/edge/community \
+    zip unzip curl git supervisor openssl ca-certificates bash \
     gcc make autoconf g++ zlib-dev \
     && apk cache clean \
     && sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
 
 #Download the desired package(s)
-RUN curl -O https://download.microsoft.com/download/7/6/d/76de322a-d860-4894-9945-f0cc5d6a45f8/msodbcsql18_18.4.1.1-1_amd64.apk \
-    && curl -O https://download.microsoft.com/download/7/6/d/76de322a-d860-4894-9945-f0cc5d6a45f8/mssql-tools18_18.4.1.1-1_amd64.apk \
-    #(Optional) Verify signature, if 'gpg' is missing install it using 'apk add gnupg':
-    #curl -O https://download.microsoft.com/download/7/6/d/76de322a-d860-4894-9945-f0cc5d6a45f8/msodbcsql18_18.4.1.1-1_amd64.sig
-    #curl -O https://download.microsoft.com/download/7/6/d/76de322a-d860-4894-9945-f0cc5d6a45f8/mssql-tools18_18.4.1.1-1_amd64.sig
+RUN curl -O https://download.microsoft.com/download/9dcab408-e0d4-4571-a81a-5a0951e3445f/msodbcsql18_18.6.1.1-1_amd64.apk \
+    && curl -O https://download.microsoft.com/download/b60bb8b6-d398-4819-9950-2e30cf725fb0/mssql-tools18_18.6.1.1-1_amd64.apk \
 
-    #curl https://packages.microsoft.com/keys/microsoft.asc  | gpg --import -
-    #gpg --verify msodbcsql18_18.4.1.1-1_amd64.sig msodbcsql18_18.4.1.1-1_amd64.apk
-    #gpg --verify mssql-tools18_18.4.1.1-1_amd64.sig mssql-tools18_18.4.1.1-1_amd64.apk
+    # (Optional) Verify signature, if 'gpg' is missing install it using 'apk add gnupg':
+    # curl -O https://download.microsoft.com/download/9dcab408-e0d4-4571-a81a-5a0951e3445f/msodbcsql18_18.6.1.1-1_amd64.sig
+    # curl -O https://download.microsoft.com/download/b60bb8b6-d398-4819-9950-2e30cf725fb0/mssql-tools18_18.6.1.1-1_amd64.sig
+    # curl https://packages.microsoft.com/keys/microsoft.asc  | gpg --import -
+    # gpg --verify msodbcsql18_18.6.1.1-1_amd64.sig msodbcsql18_18.6.1.1-1_amd64.apk
+    # gpg --verify mssql-tools18_18.6.1.1-1_amd64.sig mssql-tools18_18.6.1.1-1_amd64.apk \
 
     #Install the package(s)
-    && apk add --allow-untrusted msodbcsql18_18.4.1.1-1_amd64.apk \
-    && apk add --allow-untrusted mssql-tools18_18.4.1.1-1_amd64.apk
-
+    && apk add --allow-untrusted msodbcsql18_18.6.1.1-1_amd64.apk \
+    && apk add --allow-untrusted mssql-tools18_18.6.1.1-1_amd64.apk
 # Installing PHP
-RUN apk add --no-cache php83-fpm php83-ctype php83-curl php83-dom \
+RUN apk add --no-cache php83 php83-fpm php83-ctype php83-curl php83-dom \
     php83-fileinfo php83-ftp php83-iconv php83-json php83-ldap php83-mbstring \
     php83-mysqlnd php83-openssl php83-pdo php83-pdo_sqlite php83-pear \
     php83-phar php83-posix php83-session php83-sodium php83-simplexml \

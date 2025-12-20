@@ -1,20 +1,36 @@
 ###############################################################################
 # Imagem PHP-8.4 baseada na imagem base alpine instalando o PHP do zero
 #
-FROM alpine:3.21.2
+FROM alpine:3.23.2
 
 ARG UID=1000
 ARG GID=1000
 ARG USER=suporte
 
 # Essentials
-RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
+RUN apk add --repository https://dl-cdn.alpinelinux.org/alpine/edge/community \
     zip unzip curl git supervisor openssl ca-certificates bash \
+    gcc make autoconf g++ zlib-dev \
     && apk cache clean \
     && sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
 
+#Download the desired package(s)
+RUN curl -O https://download.microsoft.com/download/9dcab408-e0d4-4571-a81a-5a0951e3445f/msodbcsql18_18.6.1.1-1_amd64.apk \
+    && curl -O https://download.microsoft.com/download/b60bb8b6-d398-4819-9950-2e30cf725fb0/mssql-tools18_18.6.1.1-1_amd64.apk \
+
+    # (Optional) Verify signature, if 'gpg' is missing install it using 'apk add gnupg':
+    # curl -O https://download.microsoft.com/download/9dcab408-e0d4-4571-a81a-5a0951e3445f/msodbcsql18_18.6.1.1-1_amd64.sig
+    # curl -O https://download.microsoft.com/download/b60bb8b6-d398-4819-9950-2e30cf725fb0/mssql-tools18_18.6.1.1-1_amd64.sig
+    # curl https://packages.microsoft.com/keys/microsoft.asc  | gpg --import -
+    # gpg --verify msodbcsql18_18.6.1.1-1_amd64.sig msodbcsql18_18.6.1.1-1_amd64.apk
+    # gpg --verify mssql-tools18_18.6.1.1-1_amd64.sig mssql-tools18_18.6.1.1-1_amd64.apk \
+
+    #Install the package(s)
+    && apk add --allow-untrusted msodbcsql18_18.6.1.1-1_amd64.apk \
+    && apk add --allow-untrusted mssql-tools18_18.6.1.1-1_amd64.apk
+
 # Installing PHP
-RUN apk add --no-cache php84-fpm php84-ctype php84-curl php84-dom \
+RUN apk add --no-cache php84 php84-fpm php84-ctype php84-curl php84-dom \
     php84-fileinfo php84-ftp php84-iconv php84-json php84-ldap php84-mbstring \
     php84-mysqlnd php84-openssl php84-pdo php84-pdo_sqlite php84-pear \
     php84-phar php84-posix php84-session php84-sodium php84-simplexml \
@@ -22,10 +38,19 @@ RUN apk add --no-cache php84-fpm php84-ctype php84-curl php84-dom \
     php84-xmlwriter php84-zlib php84-zip php84-bz2 php84-intl php84-gd \
     php84-imap php84-mysqli php84-bcmath php84-pdo_mysql php84-opcache \
     php84-pdo_sqlite php84-pdo_pgsql php84-exif php84-pcntl ca-certificates \
-    && apk cache clean \
-    && ln -s /usr/sbin/php-fpm84 /usr/sbin/php-fpm \
-    && ln -s /usr/bin/php84 /usr/bin/php \
-    && set -x && \
+    php84-dev unixodbc-dev \
+    && apk cache clean
+
+RUN pecl channel-update pecl.php.net \
+    && pecl install sqlsrv \
+    && pecl install pdo_sqlsrv \
+    && echo "extension=sqlsrv.so" > /etc/php84/conf.d/sqlsrv.ini \
+    && echo "extension=pdo_sqlsrv.so" > /etc/php84/conf.d/pdo_sqlsrv.ini
+
+RUN ln -s /usr/sbin/php-fpm84 /usr/sbin/php-fpm
+#    && ln -s /usr/bin/php84 /usr/bin/php
+
+RUN set -x && \
     (delgroup "${USER}" || true) \
     && addgroup -g "${GID}" -S "${USER}" \
     && adduser -u "${UID}" -D -S -G "${USER}" "${USER}" \
