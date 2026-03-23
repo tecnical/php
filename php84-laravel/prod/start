@@ -38,6 +38,12 @@ else
       sleep 60
     done
 
+  elif [ "$role" = "horizon" ]; then
+
+    while [ true ]; do
+      php /var/www/html/artisan horizon:run
+    done
+
   elif [ "$role" = "reverb" ]; then
 
     while [ true ]; do
