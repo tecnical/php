@@ -41,7 +41,7 @@ else
   elif [ "$role" = "horizon" ]; then
 
     while [ true ]; do
-      php /var/www/html/artisan horizon:run
+      php /var/www/html/artisan horizon
     done
 
   elif [ "$role" = "reverb" ]; then
