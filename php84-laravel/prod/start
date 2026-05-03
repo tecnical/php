@@ -14,7 +14,8 @@ else
 
   if [ "$env" != "local" ]; then
     echo "Caching configuration..."
-    (cd /var/www/html && php artisan optimize:clear && php artisan optimize)
+    #(cd /var/www/html && php artisan optimize:clear && php artisan optimize)
+    (cd /var/www/html && php artisan optimize)
   fi
 
   if [ "$env" = "local" ] && [ "$role" = "app" ]; then
