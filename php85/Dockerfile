@@ -38,7 +38,7 @@ RUN apk add --no-cache php85 php85-fpm php85-ctype php85-curl php85-dom \
     php85-xmlwriter php85-zlib php85-zip php85-bz2 php85-intl php85-gd \
     php85-imap php85-mysqli php85-bcmath php85-pdo_mysql \
     php85-pdo_sqlite php85-pdo_pgsql php85-exif php85-pcntl ca-certificates \
-    php85-dev unixodbc-dev \
+    php85-dev php85-sockets unixodbc-dev \
     && apk cache clean
 
 RUN ln -s /usr/bin/pecl85 /usr/bin/pecl \
