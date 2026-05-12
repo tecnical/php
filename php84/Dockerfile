@@ -38,7 +38,7 @@ RUN apk add --no-cache php84 php84-fpm php84-ctype php84-curl php84-dom \
     php84-xmlwriter php84-zlib php84-zip php84-bz2 php84-intl php84-gd \
     php84-imap php84-mysqli php84-bcmath php84-pdo_mysql php84-opcache \
     php84-pdo_sqlite php84-pdo_pgsql php84-exif php84-pcntl ca-certificates \
-    php84-dev unixodbc-dev \
+    php84-dev php84-sockets unixodbc-dev \
     && apk cache clean
 
 RUN pecl channel-update pecl.php.net \
