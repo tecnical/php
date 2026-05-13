@@ -30,7 +30,10 @@ RUN apk add --repository https://dl-cdn.alpinelinux.org/alpine/edge/community \
 #    && apk add --allow-untrusted mssql-tools18_18.6.1.1-1_amd64.apk
 
 # Installing PHP
-RUN apk add --no-cache php85 php85-fpm php85-ctype php85-curl php85-dom \
+RUN apk add --no-cache \
+    --repository https://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository https://dl-cdn.alpinelinux.org/alpine/edge/community \
+    php85 php85-fpm php85-ctype php85-curl php85-dom \
     php85-fileinfo php85-ftp php85-iconv php85-json php85-ldap php85-mbstring \
     php85-mysqlnd php85-openssl php85-pdo php85-pdo_sqlite php85-pear \
     php85-phar php85-posix php85-session php85-sodium php85-simplexml \
@@ -38,12 +41,15 @@ RUN apk add --no-cache php85 php85-fpm php85-ctype php85-curl php85-dom \
     php85-xmlwriter php85-zlib php85-zip php85-bz2 php85-intl php85-gd \
     php85-imap php85-mysqli php85-bcmath php85-pdo_mysql \
     php85-pdo_sqlite php85-pdo_pgsql php85-exif php85-pcntl ca-certificates \
-    php85-dev php85-sockets unixodbc-dev \
+    php85-dev php85-sockets php85-pecl-redis unixodbc-dev \
     && apk cache clean
 
-RUN ln -s /usr/bin/pecl85 /usr/bin/pecl \
-    && ln -s /usr/sbin/php-fpm85 /usr/sbin/php-fpm \
-    && ln -s /usr/bin/php85 /usr/bin/php
+RUN ln -sf /usr/bin/pecl85 /usr/bin/pecl
+
+RUN ln -sf /usr/sbin/php-fpm85 /usr/sbin/php-fpm \
+    && ln -sf /usr/bin/php85 /usr/bin/php \
+    && ln -sf /usr/bin/php-config85 /usr/local/bin/php-config \
+    && ln -sf /usr/bin/phpize85 /usr/local/bin/phpize
 
 #RUN pecl channel-update pecl.php.net \
 #    && pecl install sqlsrv \

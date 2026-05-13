@@ -30,7 +30,10 @@ RUN curl -O https://download.microsoft.com/download/9dcab408-e0d4-4571-a81a-5a09
     && apk add --allow-untrusted mssql-tools18_18.6.1.1-1_amd64.apk
 
 # Installing PHP
-RUN apk add --no-cache php84 php84-fpm php84-ctype php84-curl php84-dom \
+RUN apk add --no-cache \
+    --repository https://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository https://dl-cdn.alpinelinux.org/alpine/edge/community \
+    php84 php84-fpm php84-ctype php84-curl php84-dom \
     php84-fileinfo php84-ftp php84-iconv php84-json php84-ldap php84-mbstring \
     php84-mysqlnd php84-openssl php84-pdo php84-pdo_sqlite php84-pear \
     php84-phar php84-posix php84-session php84-sodium php84-simplexml \
@@ -38,17 +41,19 @@ RUN apk add --no-cache php84 php84-fpm php84-ctype php84-curl php84-dom \
     php84-xmlwriter php84-zlib php84-zip php84-bz2 php84-intl php84-gd \
     php84-imap php84-mysqli php84-bcmath php84-pdo_mysql php84-opcache \
     php84-pdo_sqlite php84-pdo_pgsql php84-exif php84-pcntl ca-certificates \
-    php84-dev php84-sockets unixodbc-dev \
-    && apk cache clean
+    php84-dev php84-sockets php84-pecl-redis unixodbc-dev
 
-RUN pecl channel-update pecl.php.net \
+RUN ln -s /usr/bin/pecl84 /usr/bin/pecl \
+    && pecl channel-update pecl.php.net \
     && pecl install sqlsrv \
     && pecl install pdo_sqlsrv \
     && echo "extension=sqlsrv.so" > /etc/php84/conf.d/sqlsrv.ini \
     && echo "extension=pdo_sqlsrv.so" > /etc/php84/conf.d/pdo_sqlsrv.ini
 
-RUN ln -s /usr/sbin/php-fpm84 /usr/sbin/php-fpm
-#    && ln -s /usr/bin/php84 /usr/bin/php
+RUN ln -sf /usr/sbin/php-fpm84 /usr/sbin/php-fpm \
+    && ln -sf /usr/bin/php84 /usr/bin/php \
+    && ln -sf /usr/bin/php-config84 /usr/local/bin/php-config \
+    && ln -sf /usr/bin/phpize84 /usr/local/bin/phpize
 
 RUN set -x && \
     (delgroup "${USER}" || true) \
